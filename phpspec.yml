@@ -1,0 +1,7 @@
+formatter.name: progress
+suites:
+  fraudshield_suite:
+    namespace: Calord
+    src_path: app
+    spec_path: app
+    spec_prefix: spec
