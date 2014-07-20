@@ -15,7 +15,7 @@ class CreateEventsTable extends Migration {
     Schema::create('events', function($table)
       {
         $table->increments('id')->unsigned();
-        $table->dateTime('date');
+        $table->dateTime('date_time');
         $table->integer('event_type_id')->unsigned()->nullable();
         $table->string('title');
         $table->text('description')->nullable();
