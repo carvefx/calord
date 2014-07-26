@@ -74,7 +74,7 @@ class CalendarService
   }
 
   /**
-   * @return static
+   * @return \Carbon\Carbon
    */
   public function getLastDay()
   {
@@ -84,7 +84,7 @@ class CalendarService
   /**
    * @param $year
    * @param $month
-   * @return static
+   * @return \Carbon\Carbon
    */
   public function getLastDayByYearMonth($year, $month)
   {
@@ -183,7 +183,7 @@ class CalendarService
 
   /**
    * @param $week
-   * @return static
+   * @return \Carbon\Carbon
    */
   public function getFirstDayByWeek($week)
   {
@@ -201,36 +201,6 @@ class CalendarService
     }
 
     return $week->subDays($day_of_week);
-  }
-
-  /**
-   * @param $week
-   * @return bool
-   */
-  public function isFirstWeek($week)
-  {
-    $first_day = $this->getFirstDay();
-
-    if ($first_day->weekOfMonth == $week) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * @param $week
-   * @return bool
-   */
-  public function isLastWeek($week)
-  {
-    $last_day = $this->getLastDay();
-
-    if ($last_day->weekOfMonth == $week) {
-      return true;
-    }
-
-    return false;
   }
 
   /**

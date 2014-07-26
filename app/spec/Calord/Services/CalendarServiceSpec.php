@@ -181,16 +181,6 @@ class CalendarServiceSpec extends ObjectBehavior
     $date->toDateString()->shouldBe('2014-07-01');
   }
 
-  function it_computes_if_a_week_is_the_first_week_in_the_month()
-  {
-    $this->isFirstWeek(1)->shouldReturn(true);
-  }
-
-  function it_computes_if_a_week_is_the_last_week_in_the_month()
-  {
-    $this->isLastWeek(5)->shouldReturn(true);
-  }
-
   function it_returns_the_latest_blank_date_processed()
   {
     $weeks =
