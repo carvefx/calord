@@ -95,6 +95,9 @@ class CalendarService
     return $date;
   }
 
+  /**
+   * @return array
+   */
   public function getCalendar()
   {
     $last_day = $this->getLastDay();
@@ -108,9 +111,11 @@ class CalendarService
       ];
     }
 
-    $processed_weeks = count($weeks);
-    if($processed_weeks != 6) {
+    return $weeks;
 
+    $processed_weeks = count($weeks);
+    if($processed_weeks < 6) {
+      $this->fillBlankWeeks($weeks);
     }
 
     return $weeks;
@@ -164,7 +169,14 @@ class CalendarService
     }
 
     $days[] = $start_date->day;
-    for($day = $start_date->dayOfWeek; $day < 6; $day++) {
+    $max_days = 6;
+    $end_date = $this->getLastDay();
+
+    if($end_date->weekOfMonth == $week) {
+      $max_days = $end_date->dayOfWeek;
+    }
+
+    for($day = $start_date->dayOfWeek; $day < $max_days; $day++) {
       $days[] = $start_date->addDays(1)->day;
     }
 

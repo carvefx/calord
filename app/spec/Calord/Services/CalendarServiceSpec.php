@@ -22,7 +22,28 @@ class CalendarServiceSpec extends ObjectBehavior
 
   function it_returns_the_calendar_for_a_month()
   {
-    $expected = [];
+    $expected = [
+      [
+        'blank_days' => [29, 30],
+        'days' => [1, 2, 3, 4, 5]
+      ],
+      [
+        'blank_days' => [],
+        'days' => [6, 7, 8, 9, 10, 11, 12]
+      ],
+      [
+        'blank_days' => [],
+        'days' => [13, 14, 15, 16, 17, 18, 19]
+      ],
+      [
+        'blank_days' => [],
+        'days' => [20, 21, 22, 23, 24, 25, 26]
+      ],
+      [
+        'blank_days' => [1, 2],
+        'days' => [27, 28, 29, 30, 31]
+      ],
+    ];
     $this->getCalendar()->shouldReturn($expected);
   }
 
@@ -41,9 +62,19 @@ class CalendarServiceSpec extends ObjectBehavior
     $this->getDaysByWeek(1)->shouldReturn([1, 2, 3, 4, 5]);
   }
 
+  function it_returns_the_days_that_belong_to_a_incomplete_week_at_the_end_of_the_month()
+  {
+    $this->getDaysByWeek(5)->shouldReturn([27, 28, 29, 30, 31]);
+  }
+
   function it_returns_the_days_that_belong_to_a_complete_week()
   {
     $this->getDaysByWeek(4)->shouldReturn([20, 21, 22, 23, 24, 25, 26]);
+  }
+
+  function it_fills_in_blank_weeks()
+  {
+
   }
 
 
