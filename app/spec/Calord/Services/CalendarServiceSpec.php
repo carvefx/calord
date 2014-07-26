@@ -20,6 +20,33 @@ class CalendarServiceSpec extends ObjectBehavior
     $this->setMonth(7);
   }
 
+  function it_returns_the_calendar_for_a_month()
+  {
+    $expected = [];
+    $this->getCalendar()->shouldReturn($expected);
+  }
+
+  function it_returns_the_blank_days_for_a_given_beginning_week()
+  {
+    $this->getBlankDaysByWeek(1)->shouldReturn([29, 30]);
+  }
+
+  function it_returns_the_blank_days_for_a_given_ending_week()
+  {
+    $this->getBlankDaysByWeek(5)->shouldReturn([1, 2]);
+  }
+
+  function it_returns_the_days_that_belong_to_a_incomplete_week()
+  {
+    $this->getDaysByWeek(1)->shouldReturn([1, 2, 3, 4, 5]);
+  }
+
+  function it_returns_the_days_that_belong_to_a_complete_week()
+  {
+    $this->getDaysByWeek(4)->shouldReturn([20, 21, 22, 23, 24, 25, 26]);
+  }
+
+
   function it_returns_the_date_for_the_first_day()
   {
     $date = Carbon::create(2014, 7, 1, 0);
@@ -48,39 +75,28 @@ class CalendarServiceSpec extends ObjectBehavior
     $returned_date->toDateTimeString()->shouldBe($date->toDateTimeString());
   }
 
-  function it_computes_the_calendar_for_a_given_month_and_year()
+  function it_gets_the_first_day_by_week()
   {
-    $weeks = [
-        [
-          'blank_days' => [30],
-          'days' => [1, 2, 3, 4, 5, 6]
-        ],
-        [
-          'days' => [7, 8, 9, 10, 11, 12, 13]
-        ],
-        [
-          'days' => [14, 15, 16, 17, 18, 19, 20]
-        ],
-        [
-          'days' => [21, 22, 23, 24, 25, 26, 27]
-        ],
-        [
-          'blank_days' => [1, 2, 3],
-          'days' => [28, 29, 30, 31]
-        ]
-    ];
-    $this->getWeeks()->shouldReturn($weeks);
+    $date = $this->getFirstDayByWeek(2);
+    $date->toDateString()->shouldBe('2014-07-06');
+
+    $date = $this->getFirstDayByWeek(6);
+    $date->toDateString()->shouldBe('2014-08-03');
+
+    $date = $this->getFirstDayByWeek(1);
+    $date->toDateString()->shouldBe('2014-07-01');
   }
 
-  function it_computes_the_number_of_blank_days_for_a_given_week_of_a_month()
+  function it_computes_if_a_week_is_the_first_week_in_the_month()
   {
-    $this->getBlankDays()->shouldReturn(
-      [
-        'first_week' => [29, 30],
-        'last_week' => [1, 2],
-        ]
-    );
+    $this->isFirstWeek(1)->shouldReturn(true);
   }
+
+  function it_computes_if_a_week_is_the_last_week_in_the_month()
+  {
+    $this->isLastWeek(5)->shouldReturn(true);
+  }
+
 
 
 }

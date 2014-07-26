@@ -6,6 +6,13 @@ use Carbon\Carbon;
 
 class CalendarService
 {
+
+  const DAYS_IN_WEEK = 7;
+
+  const WEEKS_IN_MONTH = 6;
+
+  const DAY_SLOTS_IN_MONTH = 42;
+
   /**
    * @var
    */
@@ -88,65 +95,131 @@ class CalendarService
     return $date;
   }
 
-  public function getWeeks()
-  {
-    $date = $this->getFirstDay();
-    //$total_days = $date->daysInMonth();
-  }
-
-  public function getBlankDays()
-  {
-    $blank_days = [
-      'first_week' => [],
-      'last_week' => []
-    ];
-    $blank_days['first_week'] = $this->getFirstWeekBlanks();
-    $blank_days['last_week'] = $this->getLastWeekBlanks();
-
-    return $blank_days;
-  }
-
-  /**
-   * @return array|bool
-   */
-  private function getFirstWeekBlanks()
-  {
-    $first_day = $this->getFirstDay();
-    $day_of_week = $first_day->dayOfWeek;
-
-    if ($day_of_week == $first_day->day) {
-      return [];
-    }
-
-    $blank_days = [];
-    for ($day = 0; $day < $day_of_week; $day++) {
-      $blank_days[] = $first_day->subDays(1)->day;
-    }
-
-    sort($blank_days, SORT_NUMERIC);
-    return array_values($blank_days);
-  }
-
-  /**
-   * @return array|bool
-   */
-  private function getLastWeekBlanks()
+  public function getCalendar()
   {
     $last_day = $this->getLastDay();
-    $day_of_week = $last_day->dayOfWeek;
+    $last_week = $last_day->weekOfMonth;
 
-    if ($day_of_week == 6) {
-      return [];
+    $weeks = [];
+    for($week = 1; $week <= $last_week; $week++) {
+      $weeks[] = [
+        'blank_days' => $this->getBlankDaysByWeek($week),
+        'days' => $this->getDaysByWeek($week)
+      ];
     }
 
+    $processed_weeks = count($weeks);
+    if($processed_weeks != 6) {
 
+    }
+
+    return $weeks;
+
+  }
+
+  /**
+   * @param $week
+   * @return array
+   */
+  public function getBlankDaysByWeek($week)
+  {
     $blank_days = [];
-    for ($day = 6; $day > $day_of_week; $day--) {
-      $blank_days[] = $last_day->addDays(1)->day;
-    }
+    if($week == 1) {
+      $start_date = $this->getFirstDay();
+      if($start_date->day == $start_date->dayOfWeek) {
+        return $blank_days;
+      }
 
+      $missing_days = $start_date->dayOfWeek;
+      for($day = 1; $day <= $missing_days; $day++) {
+        $blank_days[] = $start_date->subDay(1)->day;
+      }
+    } else {
+      $last_date = $this->getLastDay();
+      if($last_date->weekOfMonth != $week) {
+        return $blank_days;
+      }
+
+      $day = $last_date->dayOfWeek;
+      for($day; $day < 6; $day++) {
+        $blank_days[] = $last_date->addDay(1)->day;
+      }
+    }
 
     sort($blank_days, SORT_NUMERIC);
     return array_values($blank_days);
+  }
+
+  /**
+   * @param $week
+   * @return array
+   */
+  public function getDaysByWeek($week)
+  {
+    $days = [];
+    $start_date = $this->getFirstDay();
+
+    if($week != $start_date->weekOfMonth) {
+      $start_date = $this->getFirstDayByWeek($week);
+    }
+
+    $days[] = $start_date->day;
+    for($day = $start_date->dayOfWeek; $day < 6; $day++) {
+      $days[] = $start_date->addDays(1)->day;
+    }
+
+    return $days;
+  }
+
+  /**
+   * @param $week
+   * @return static
+   */
+  public function getFirstDayByWeek($week)
+  {
+    $first_day = $this->getFirstDay();
+
+    if ($week == 1) {
+      return $first_day;
+    }
+
+    $week = $first_day->addWeeks($week - 1);
+    $day_of_week = $week->dayOfWeek;
+
+    if ($day_of_week == 1) {
+      return $week;
+    }
+
+    return $week->subDays($day_of_week);
+  }
+
+  /**
+   * @param $week
+   * @return bool
+   */
+  public function isFirstWeek($week)
+  {
+    $first_day = $this->getFirstDay();
+
+    if ($first_day->weekOfMonth == $week) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * @param $week
+   * @return bool
+   */
+  public function isLastWeek($week)
+  {
+    $last_day = $this->getLastDay();
+
+    if ($last_day->weekOfMonth == $week) {
+      return true;
+    }
+
+    return false;
   }
 }
