@@ -44,7 +44,8 @@ class CalendarServiceSpec extends ObjectBehavior
         'days' => [27, 28, 29, 30, 31]
       ],
       [
-        'blank_days' => [3, 4, 5, 6, 7, 8, 9]
+        'blank_days' => [3, 4, 5, 6, 7, 8, 9],
+        'days' => []
       ]
     ];
     $this->getCalendar()->shouldReturn($expected);

@@ -114,7 +114,7 @@ class CalendarService
     $processed_weeks = count($weeks);
     if($processed_weeks < self::WEEKS_IN_MONTH) {
       $needed = self::WEEKS_IN_MONTH - $processed_weeks;
-      $this->fillBlankWeeks($weeks, $needed);
+      $weeks = $this->fillBlankWeeks($weeks, $needed);
     }
 
     return $weeks;
